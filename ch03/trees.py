@@ -2,6 +2,7 @@
 
 import math
 
+# 计算信息熵
 # 信息熵越大，信息量越大
 def calShannonEnt(dataSet):
     labels = {}
@@ -31,6 +32,8 @@ def createDataSet():
     labels = ['no surfacing', 'flipers']
     return dataSet, labels
 
+# 从dataSet中筛选出指定列axis的值等于value的行
+# 筛选出的行将删去列axis
 def splitDataSet(dataSet, axis, value):
     retDataSet = []
     for vec in dataSet:
@@ -40,6 +43,7 @@ def splitDataSet(dataSet, axis, value):
             retDataSet.append(reducedVec)
     return retDataSet
 
+# 找出信息增益最大的划分方式
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1
     baseEntropy = calShannonEnt(dataSet)
@@ -53,7 +57,9 @@ def chooseBestFeatureToSplit(dataSet):
             subDataSet = splitDataSet(dataSet, i, value)
             prob = len(subDataSet) / float(len(dataSet))
             # 每个特征的不同特征值的信息熵的加权和，权重是特征值的频率
+            # （熵越大，代表信息越多，即不同的特征值越多？可以这么理解？）
             newEntropy += prob * calShannonEnt(subDataSet)
+        # 信息增益是熵的减少或者是数据无序度的减少
         infoGain = baseEntropy - newEntropy
         if (infoGain > bestInfoGain):
             bestInfoGain = infoGain
@@ -74,6 +80,8 @@ def createTree(dataSet, labels):
     classList = [example[-1] for example in dataSet]
     if classList.count(classList[0]) == len(classList):
         return classList[0]
+    if len(dataSet[0]) == 1:
+        return majorityCnt(classList)
     bestFeat = chooseBestFeatureToSplit(dataSet)
     bestFeatLabel = labels[bestFeat]
     del(labels[bestFeat])
