@@ -16,7 +16,7 @@ def loadDataSet():
 def createVocabList(dataSet):
     vocabSet = set([])
     for document in dataSet:
-        vocabSet = vocabSet | set(document)
+        vocabSet |= set(document)
     return list(vocabSet)
 
 # 判断指定列表中的每个单词是否在数据集中出现过
@@ -28,3 +28,23 @@ def setOfWords2Vec(vocabList, inputSet):
         else:
             print "the word: %s is not in my vocabulary" % word
     return returnVec
+
+def trainNB0(trainMatrix, trainCategory):
+    numTrainDocs = len(trainMatrix)
+    numVocab = len(trainMatrix[0])
+    pAbusive = sum(trainCategory) / float(numTrainDocs)
+    # 创建长度为numVocab，值全部为0的数组
+    p0Num = np.zeros(numVocab)
+    p1Num = np.zeros(numVocab)
+    p0Denom = 0.0
+    p1Denom = 0.0
+    for i in range(numTrainDocs):
+        if trainCategory[i] == 1:
+            p1Num += trainMatrix[i]
+            p1Denom += sum(trainMatrix[i])
+        else:
+            p0Num += trainMatrix[i]
+            p0Denom += sum(trainMatrix[i])
+    p1Vect = p1Num / p1Denom
+    p0Vect = p0Num / p0Denom
+    return p0Vect, p1Vect, pAbusive
