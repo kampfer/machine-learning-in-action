@@ -53,6 +53,7 @@ def spamTest():
         wordVector = bayes.setOfWords2Vec(vocabList, docList[docIndex])
         if bayes.classifyNB(wordVector, p0V, p1V, pSpam) != classList[docIndex]:
             errorCount += 1
+            print 'classification error',  docList[docIndex]
     print 'the error rate is: ', float(errorCount) / len(testSet)
 
 # testingNB()
