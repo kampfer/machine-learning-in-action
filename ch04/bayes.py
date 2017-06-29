@@ -19,6 +19,7 @@ def createVocabList(dataSet):
         vocabSet |= set(document)
     return list(vocabSet)
 
+# 词集模型
 # 判断指定列表中的每个单词是否在数据集中出现过
 def setOfWords2Vec(vocabList, inputSet):
     returnVec = [0] * len(vocabList)
@@ -27,6 +28,14 @@ def setOfWords2Vec(vocabList, inputSet):
             returnVec[vocabList.index(word)] = 1
         else:
             print "the word: %s is not in my vocabulary" % word
+    return returnVec
+
+# 词袋模型
+def bagOfWords2Vec(vocabList, inputSet):
+    returnVec = np.zeros(len(vocabList))
+    for word in inputSet:
+        if word in vocabList:
+            returnVec[vocabList.index(word)] += 1
     return returnVec
 
 def trainNB0(trainMatrix, trainCategory):
@@ -63,17 +72,3 @@ def classifyNB(vec2Classify, p0Vec, p1Vec, pClassl):
         return 1
     else:
         return 0
-
-def testingNB():
-    postList, classList = loadDataSet()
-    myVocabList = createVocabList(postList)
-    trainMat = []
-    for post in postList:
-        trainMat.append(setOfWords2Vec(myVocabList, post))
-    p0V, p1V, pAb = trainNB0(trainMat, classList)
-    testEntry = ['love', 'my', 'dalmation']
-    thisDoc = setOfWords2Vec(myVocabList, testEntry)
-    print testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb)
-    testEntry = ['stupid', 'garbage']
-    thisDoc = setOfWords2Vec(myVocabList, testEntry)
-    print testEntry, 'classified as: ', classifyNB(thisDoc, p0V, p1V, pAb)
