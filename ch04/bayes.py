@@ -12,7 +12,8 @@ def loadDataSet():
     classVec = [0,1,0,1,0,1]    #1 is abusive, 0 not
     return postingList,classVec
 
-# 提取出数据中所有的单词，并去重
+# [['a', 'b'],['b', 'c', 'd'],['d']] -> ['a', 'b', 'c', 'd']
+# 顺序可能无法加保证
 def createVocabList(dataSet):
     vocabSet = set([])
     for document in dataSet:
