@@ -46,11 +46,13 @@ def spamTest():
     trainClasses = []
     for docIndex in trainingSet:
         trainMat.append(bayes.setOfWords2Vec(vocabList, docList[docIndex]))
+        # trainMat.append(bayes.bagOfWords2Vec(vocabList, docList[docIndex]))
         trainClasses.append(classList[docIndex])
     p0V, p1V, pSpam = bayes.trainNB0(trainMat, trainClasses)
     errorCount = 0
     for docIndex in testSet:
         wordVector = bayes.setOfWords2Vec(vocabList, docList[docIndex])
+        # wordVector = bayes.bagOfWords2Vec(vocabList, docList[docIndex])
         if bayes.classifyNB(wordVector, p0V, p1V, pSpam) != classList[docIndex]:
             errorCount += 1
             print 'classification error',  docList[docIndex]
