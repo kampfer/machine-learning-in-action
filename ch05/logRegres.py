@@ -23,7 +23,6 @@ def gradeAscent(dataMatIn, classLabels):
     alpha = 0.001
     maxCycles = 500
     weights = np.ones((n, 1))
-    print weights
     for k in range(maxCycles):
         h = sigmoid(dataMatrix * weights)
         error = (labelMat - h)
