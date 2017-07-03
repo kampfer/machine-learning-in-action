@@ -29,8 +29,35 @@ def gradeAscent(dataMatIn, classLabels):
         weights = weights + alpha * dataMatrix.transpose() * error
     return weights
 
-def plotBestFit(wei):
-    weights = wei.getA()
+# 随机梯度上升
+# 批量算法
+def stocGradAscent0(dataMatrix, classLabels):
+    m, n = np.shape(dataMatrix)
+    alpha = 0.01
+    weights = np.ones(n)
+    for i in range(m):
+        h = sigmoid(sum(dataMatrix[i] * weights))
+        error = classLabels[i] - h
+        weights = weights + alpha * error * dataMatrix[i]
+    return weights
+
+# 优化后的随机梯度上升
+# 在线算法
+def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+    m, n = np.shape(dataMatrix)
+    weights = np.ones(n)
+    for j in range(numIter):
+        dataIndex = range(m)
+        for i in range(m):
+            alpha = 4 / (i + j + 1.0) + 0.01
+            randIndex = int(np.random.uniform(0, len(dataIndex)))
+            h = sigmoid(sum(dataMatrix[randIndex] * weights))
+            error = classLabels[randIndex] - h
+            weights = weights + alpha * error * dataMatrix[randIndex]
+            del(dataIndex[randIndex])
+    return weights
+
+def plotBestFit(weights):
     dataMat, labelMat = loadDataSet()
     dataArr = np.array(dataMat)
     n = np.shape(dataArr)[0]
@@ -55,3 +82,10 @@ def plotBestFit(wei):
     plt.xlabel('X1')
     plt.ylabel('X2')
     plt.show()
+
+def classifyVector(inX, weights):
+    prob = sigmoid(sum(inX * weights))
+    if prob > 0.5:
+        return 1.0
+    else:
+        return 0.0
