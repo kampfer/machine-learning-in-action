@@ -48,10 +48,13 @@ def trainNB0(trainMatrix, trainCategory):
     # p1Num = np.zeros(numVocab)
     # p0Denom = 0.0
     # p1Denom = 0.0
-    p0Num = np.ones(numVocab)   # 所有单词在分类为0的文档中出现的次数
-    p1Num = np.ones(numVocab)   # 所有单词在分类为1的文档中出现的次数
-    p0Denom = 2.0   # 
-    p1Denom = 2.0
+    p0Num = np.ones(numVocab)   # 分类为0的情况下每个单词出现的次数
+    p1Num = np.ones(numVocab)   # 分类为1的情况下每个单词出现的次数
+    p0Denom = 2.0               # 分类为0的情况下，文档单词总和
+    p1Denom = 2.0               # 分类为1的情况下，文档单词总和
+    # 既然是单词总和为什么不是数组的和，而指定为2？
+    # p0Denom = sum(p0Num)
+    # p1Denom = sum(p1Num)
     for i in range(numTrainDocs):
         if trainCategory[i] == 1:
             p1Num += trainMatrix[i]
