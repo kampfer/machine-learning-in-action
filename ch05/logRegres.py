@@ -16,6 +16,7 @@ def loadDataSet():
 def sigmoid(inX):
     return 1.0 / (1 + np.exp(-inX))
 
+# 梯度上升算法
 def gradeAscent(dataMatIn, classLabels):
     dataMatrix = np.mat(dataMatIn)
     labelMat = np.mat(classLabels).transpose()      # 将行向量转换为列向量
