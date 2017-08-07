@@ -216,3 +216,31 @@ def calcWs(alphas, dataArr, classLabels):
     for i in range(m):
         w += np.multiply(alphas[i] * labelMat[i], X[i,:].T)
     return w
+
+def img2vector(filename):
+    returnVect = np.zeros((1,1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j] = int(lineStr[j])
+    return returnVect
+
+def loadImages(dirName):
+    from os import listdir
+    hwLabels = []
+    trainingFileList = listdir(dirName)
+    m = len(trainingFileList)
+    trainingMat = np.zeros((m, 1024))
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        # svm是个二分类器，这里我们只能判断9或非9。（9也可以是其他数字）
+        if classNumStr == 9:
+            hwLabels.append(-1)
+        else:
+            hwLabels.append(1)
+        trainingMat[i,:] = img2vector('%s/%s'%(dirName, fileNameStr))
+    return trainingMat,hwLabels
+
