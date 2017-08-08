@@ -3,7 +3,6 @@
 import adaboost
 import numpy as np
 
-datMat, classLabels = adaboost.loadSimpData()
-D = np.mat(np.ones((5,1)) / 5)
-bestStump, minError, bestClassEst = adaboost.buildStump(datMat, classLabels, D)
-print(bestStump, minError, bestClassEst)
+dataArr, classLabels = adaboost.loadSimpData()
+classifierArr = adaboost.adaBoostTrainDS(dataArr, classLabels, 30)
+print(adaboost.adaClassify([0,0], classifierArr))
