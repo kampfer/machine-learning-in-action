@@ -47,7 +47,7 @@ def buildStump(dataArr, classLabels, D):
     return bestStump, minError, bestClassEst
 
 def adaBoostTrainDS(dataArr, classLabels, numIt=40):
-    weekClassArr = []
+    weakClassArr = []
     m = np.shape(dataArr)[0]
     D = np.mat(np.ones((m,1))/m)
     aggClassEst = np.mat(np.zeros((m,1)))
@@ -56,7 +56,7 @@ def adaBoostTrainDS(dataArr, classLabels, numIt=40):
         print('D:',D.T)
         alpha = float(0.5 * np.log((1.0-error)/max(error,1e-16)))
         bestStump['alpha'] = alpha
-        weekClassArr.append(bestStump)
+        weakClassArr.append(bestStump)
         print('classEst:', classEst.T)
         expon = np.multiply(-1 * alpha * np.mat(classLabels).T, classEst)
         D = np.multiply(D, np.exp(expon))
@@ -68,7 +68,7 @@ def adaBoostTrainDS(dataArr, classLabels, numIt=40):
         print('total error: ', errorRate, '\n')
         if errorRate == 0.0:
             break
-    return weekClassArr
+    return weakClassArr
 
 def adaClassify(dataToClass, classifierArr):
     dataMatrix = np.mat(dataToClass)
