@@ -11,6 +11,21 @@ def loadSimpData():
     classLabels = [1.0, 1.0, -1.0, -1.0, 1.0]
     return datMat,classLabels
 
+def loadDataSet(fileName):
+    numFeat = len(open(fileName).readline().split('\t'))
+    dataMat = []
+    labelMat = []
+    fr = open(fileName)
+    for line in fr.readlines():
+        lineArr = []
+        curLine = line.strip().split('\t')
+        for i in range(numFeat - 1):
+            lineArr.append(float(curLine[i]))
+        dataMat.append(lineArr)
+        labelMat.append(float(curLine[-1]))
+    return dataMat, labelMat
+
+# 弱分类器 - 大于等于（或小于）的在一边，其他在另一边
 def stumpClassify(dataMatrix, dimen, threshVal, threshIneq):
     retArray = np.ones((np.shape(dataMatrix)[0], 1))
     if threshIneq == 'lt':
@@ -19,6 +34,7 @@ def stumpClassify(dataMatrix, dimen, threshVal, threshIneq):
         retArray[dataMatrix[:,dimen] > threshVal] = -1.0
     return retArray
 
+# 找到误差最小的弱分类器
 def buildStump(dataArr, classLabels, D):
     dataMatrix = np.mat(dataArr)
     labelMat = np.mat(classLabels).T
@@ -38,6 +54,7 @@ def buildStump(dataArr, classLabels, D):
                 errArr = np.mat(np.ones((m,1)))
                 errArr[predictedVals == labelMat] = 0
                 weightedError = D.T * errArr
+                print('split: dim %d, thresh: %.2f, thresh inequal: %s, the weighted error: %.3f'%(i, threshVal, inequal, weightedError))
                 if weightedError < minError:
                     minError = weightedError
                     bestClassEst = predictedVals.copy()
@@ -49,6 +66,7 @@ def buildStump(dataArr, classLabels, D):
 def adaBoostTrainDS(dataArr, classLabels, numIt=40):
     weakClassArr = []
     m = np.shape(dataArr)[0]
+    # 初始权重，把1等分
     D = np.mat(np.ones((m,1))/m)
     aggClassEst = np.mat(np.zeros((m,1)))
     for i in range(numIt):
