@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def loadSimpData():
     datMat = np.matrix([[ 1. ,  2.1],
@@ -66,12 +67,13 @@ def buildStump(dataArr, classLabels, D):
 def adaBoostTrainDS(dataArr, classLabels, numIt=40):
     weakClassArr = []
     m = np.shape(dataArr)[0]
-    # 初始权重，把1等分
+    # 初始权重(每个样本的权重)，把1等分
     D = np.mat(np.ones((m,1))/m)
     aggClassEst = np.mat(np.zeros((m,1)))
     for i in range(numIt):
         bestStump, error, classEst = buildStump(dataArr, classLabels, D)
         print('D:',D.T)
+        # 每个弱分类器的权重
         alpha = float(0.5 * np.log((1.0-error)/max(error,1e-16)))
         bestStump['alpha'] = alpha
         weakClassArr.append(bestStump)
@@ -86,7 +88,7 @@ def adaBoostTrainDS(dataArr, classLabels, numIt=40):
         print('total error: ', errorRate, '\n')
         if errorRate == 0.0:
             break
-    return weakClassArr
+    return weakClassArr, aggClassEst
 
 def adaClassify(dataToClass, classifierArr):
     dataMatrix = np.mat(dataToClass)
@@ -97,3 +99,31 @@ def adaClassify(dataToClass, classifierArr):
         aggClassEst += classifierArr[i]['alpha'] * classEst
         print aggClassEst
     return np.sign(aggClassEst)
+
+def plotROC(predStrengths, classLabels):
+    cur = (1.0, 1.0)
+    ySum = 0.0
+    numPosClass = sum(np.array(classLabels)==1.0)
+    yStep = 1 / float(numPosClass)
+    xStep = 1 / float(len(classLabels) - numPosClass)
+    sortedIndicies = predStrengths.argsort()
+    fig = plt.figure()
+    fig.clf()
+    ax = plt.subplot(111)
+    for index in sortedIndicies.tolist()[0]:
+        if classLabels[index] == 1.0:
+            delX = 0
+            delY = yStep
+        else:
+            delX = xStep
+            delY = 0
+            ySum += cur[1]
+        ax.plot([cur[0], cur[0] - delX], [cur[1], cur[1] - delY], c='b')
+        cur = (cur[0] - delX, cur[1] - delY)
+    ax.plot([0,1],[0,1],'b--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC curve for AdaBoost Horse Colic Detection System')
+    ax.axis([0,1,0,1])
+    plt.show()
+    print('the Area Under the Curve is: ', ySum * xStep)
