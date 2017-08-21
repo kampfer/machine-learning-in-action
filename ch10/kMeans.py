@@ -74,7 +74,7 @@ def biKmeans(dataSet, k, disMeas=distEclud):
                 lowestSSE = sseSplit + sseNotSplit
         bestClustAss[np.nonzero(bestClustAss[:,0].A == 1)[0], 0] = len(centList)
         bestClustAss[np.nonzero(bestClustAss[:,0].A == 0)[0], 0] = bestCentToSplit
-        centList[bestCentToSplit] = bestNewCents[0,:]
-        centList.append(bestNewCents[1,:])
+        centList[bestCentToSplit] = bestNewCents[0,:].tolist()[0]
+        centList.append(bestNewCents[1,:].tolist()[0])
         clusterAssment[np.nonzero(clusterAssment[:,0].A == bestCentToSplit)[0],:] = bestClustAss
     return np.mat(centList), clusterAssment
