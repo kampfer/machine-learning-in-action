@@ -2,6 +2,7 @@
 
 import kMeans
 import numpy as np
+import matplotlib.pyplot as plt
 
 def test1():
     dataMat = np.mat(kMeans.loadDataSet('testSet.txt'))
@@ -20,6 +21,7 @@ def test3():
 def test4():
     dataMat = np.mat(kMeans.loadDataSet('testSet2.txt'))
     centList, myNewAssments = kMeans.biKmeans(dataMat, 3)
+    kMeans.plotScatter(dataMat, centList, myNewAssments)
     print centList
 
 test4()

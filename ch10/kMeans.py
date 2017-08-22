@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def loadDataSet(fileName):
     dataMat = []
@@ -53,10 +54,13 @@ def kMeans(dataSet, k, disMeas=distEclud, createCent=randCent):
 
 def biKmeans(dataSet, k, disMeas=distEclud):
     m = np.shape(dataSet)[0]
+    # 每行第一个元素代表分类,第二个元素代表误差
     clusterAssment = np.mat(np.zeros((m, 2)))
+    # 首先将取每个特征的均值最为质心的坐标
     centroid0 = np.mean(dataSet, axis=0).tolist()[0]
     # print(centroid0)
     centList = [centroid0]
+    # 计算每一行的误差
     for j in range(m):
         clusterAssment[j,1] = disMeas(np.mat(centroid0), dataSet[j,:])**2
     while (len(centList) < k):
@@ -78,3 +82,10 @@ def biKmeans(dataSet, k, disMeas=distEclud):
         centList.append(bestNewCents[1,:].tolist()[0])
         clusterAssment[np.nonzero(clusterAssment[:,0].A == bestCentToSplit)[0],:] = bestClustAss
     return np.mat(centList), clusterAssment
+
+def plotScatter(dataMat, centList, clusterAssment):
+    fig = plt.figure()
+    axs = fig.add_subplot(111)
+    axs.scatter(dataMat[:,0].A, dataMat[:,1].A)
+    axs.scatter(centList[:,0].A, centList[:,1].A, c='red')
+    plt.show()
