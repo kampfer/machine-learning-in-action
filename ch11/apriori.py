@@ -76,16 +76,21 @@ def generateRules(L, supportData, minConf=0.7):
 def calcConf(freqSet, H, supportData, brl, minConf=0.7):
     prunedH = []
     for conseq in H:
+        # frozenset之后freqSet和conseq才能相减
+        # print(freqSet, conseq, freqSet - conseq)
         conf = supportData[freqSet] / supportData[freqSet - conseq]
         if conf >= minConf:
-            print(freqSet-conseq, '-->', conseq, 'conf:', conf)
+            # print(freqSet-conseq, '-->', conseq, 'conf:', conf)
             brl.append((freqSet - conseq, conseq, conf))
             prunedH.append(conseq)
     return prunedH
 
+# H中的每个元素是关联规则的后件
 def ruleFromConseq(freqSet, H, supportData, brl, minConf=0.7):
     m = len(H[0])
+    print(freqSet)
     if (len(freqSet) > (m + 1)):
+        print('ruleFromConseq')
         Hmp1 = aprioriGen(H, m+1)
         Hmp1 = calcConf(freqSet, Hmp1, supportData, brl, minConf)
         if (len(Hmp1) > 1):
