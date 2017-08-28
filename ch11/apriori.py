@@ -31,6 +31,7 @@ def scanD(D, Ck, minSupport):
         supportData[key] = support
     return retList, supportData
 
+# 生成数据项集
 def aprioriGen(Lk, k):
     retList = []
     lenLk = len(Lk)
