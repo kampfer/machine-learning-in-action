@@ -12,6 +12,7 @@ def createC1(dataSet):
     C1.sort()
     return map(frozenset, C1)
 
+# 计算Ck各项在D中出现的频率，只保留大于minSupport的CK项
 def scanD(D, Ck, minSupport):
     ssCnt = {}
     for tid in D:
@@ -61,3 +62,37 @@ def apriori(dataSet, minSupport = 0.5):
         L.append(Lk)
         k += 1
     return L, supportData
+
+def generateRules(L, supportData, minConf=0.7):
+    bigRuleList = []
+    for i in range(1, len(L)): # 第一个集合每项只有一个元素，无法生成规则，所以跳过，从第二个集合开始遍历
+        for freqSet in L[i]:
+            H1 = [frozenset([item]) for item in freqSet]
+            if (i > 1):
+                ruleFromConseq(freqSet, H1, supportData, bigRuleList, minConf)
+            else:
+                calcConf(freqSet, H1, supportData, bigRuleList, minConf)
+    return bigRuleList
+
+def calcConf(freqSet, H, supportData, brl, minConf=0.7):
+    prunedH = []
+    for conseq in H:
+        # frozenset之后freqSet和conseq才能相减
+        # print(freqSet, conseq, freqSet - conseq)
+        conf = supportData[freqSet] / supportData[freqSet - conseq]
+        if conf >= minConf:
+            # print(freqSet-conseq, '-->', conseq, 'conf:', conf)
+            brl.append((freqSet - conseq, conseq, conf))
+            prunedH.append(conseq)
+    return prunedH
+
+# H中的每个元素是关联规则的后件
+def ruleFromConseq(freqSet, H, supportData, brl, minConf=0.7):
+    m = len(H[0])
+    print(freqSet)
+    if (len(freqSet) > (m + 1)):
+        print('ruleFromConseq')
+        Hmp1 = aprioriGen(H, m+1)
+        Hmp1 = calcConf(freqSet, Hmp1, supportData, brl, minConf)
+        if (len(Hmp1) > 1):
+            ruleFromConseq(freqSet, Hmp1, supportData, brl, minConf)
