@@ -50,12 +50,27 @@ def createTree(dataSet, minSup=1):
         localD = {}
         for item in tranSet:
             if item in freqItemSet:
+                # print item, headerTable[item][0]
                 localD[item] = headerTable[item][0]
+        # print(localD)
         if len(localD) > 0:
             orderedItems = [v[0] for v in sorted(localD.items(), key=lambda p: p[1], reverse=True)]
-            print(localD, orderedItems)
-            # updateTree(orderedItems, retTree, headerTable, count)
-    print(headerTable)
-    return headerTable, retTree
+            updateTree(orderedItems, retTree, headerTable, count)
+    return retTree, headerTable
 
+def updateTree(items, inTree, headerTable, count):
+    if items[0] in inTree.children:
+        inTree.children[items[0]].inc(count)
+    else:
+        inTree.children[items[0]] = treeNode(items[0], count, inTree)
+        if headerTable[items[0]][1] == None:
+            headerTable[items[0]][1] = inTree.children[items[0]]
+        else:
+            updateHeader(headerTable[items[0]][1], inTree.children[items[0]])
+    if len(items) > 1:
+        updateTree(items[1:], inTree.children[items[0]], headerTable, count)
 
+def updateHeader(nodeToTest, targetNode):
+    while (nodeToTest.nodeLink != None):
+        nodeToTest = nodeToTest.nodeLink
+    nodeToTest.nodeLink = targetNode
