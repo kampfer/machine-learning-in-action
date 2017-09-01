@@ -7,6 +7,7 @@ def test():
     initSet = fpGrowth.createInitSet(simpDat)
     myFPtree, myHeaderTab = fpGrowth.createTree(initSet, 3)
     myFPtree.disp()
-    print fpGrowth.findPrefixPath('x', myHeaderTab['x'][1])
+    freqItems = []
+    fpGrowth.mineTree(myFPtree, myHeaderTab, 3, set([]), freqItems)
 
 test()
