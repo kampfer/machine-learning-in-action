@@ -32,6 +32,9 @@ def scanD(D, Ck, minSupport):
         supportData[key] = support
     return retList, supportData
 
+# 生成数据项集
+# 使用Lk合成新的项集，每个项集的大小是k
+# 新项集的大小k一般是老项集的大小+1
 def aprioriGen(Lk, k):
     retList = []
     lenLk = len(Lk)
@@ -67,9 +70,9 @@ def generateRules(L, supportData, minConf=0.7):
     for i in range(1, len(L)): # 第一个集合每项只有一个元素，无法生成规则，所以跳过，从第二个集合开始遍历
         for freqSet in L[i]:
             H1 = [frozenset([item]) for item in freqSet]
-            if (i > 1):
+            if (i > 1): # 从第三个集合开始（i=2），每个项集的大小大于2，此时需要生成关联规则。
                 ruleFromConseq(freqSet, H1, supportData, bigRuleList, minConf)
-            else:
+            else: # 项集的大小等于2，此时不需要生成关联规则，直接计算置信度
                 calcConf(freqSet, H1, supportData, bigRuleList, minConf)
     return bigRuleList
 
@@ -88,9 +91,7 @@ def calcConf(freqSet, H, supportData, brl, minConf=0.7):
 # H中的每个元素是关联规则的后件
 def ruleFromConseq(freqSet, H, supportData, brl, minConf=0.7):
     m = len(H[0])
-    print(freqSet)
     if (len(freqSet) > (m + 1)):
-        print('ruleFromConseq')
         Hmp1 = aprioriGen(H, m+1)
         Hmp1 = calcConf(freqSet, Hmp1, supportData, brl, minConf)
         if (len(Hmp1) > 1):
