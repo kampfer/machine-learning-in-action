@@ -11,7 +11,7 @@ def loadDataSet(fileName, delim='\t'):
 def pca(dataMat, topNfeat=9999999):
     meanVals = np.mean(dataMat, axis=0)
     meanRemoved = dataMat - meanVals
-    covMat = np.cov(meanRemoved, rowvar=0)
+    covMat = np.cov(meanRemoved, rowvar=False)
     eigVals, eigVects = np.linalg.eig(covMat)
     eigValInd = np.argsort(eigVals)
     eigValInd = eigValInd[:-(topNfeat + 1):-1]

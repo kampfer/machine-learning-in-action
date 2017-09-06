@@ -41,4 +41,3 @@ def classifyPerson():
     inArr = np.array([ffMiles, percentTats, iceCream])
     classifierResult = classify0((inArr - minVals) / ranges, normData, datingLabels, 3)
     print "you will probably like this person: ", resultList[classifierResult - 1]
-
